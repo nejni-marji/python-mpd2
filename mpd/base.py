@@ -204,11 +204,6 @@ class MPDClientBase(object):
             "Abstract ``MPDClientBase`` does not implement ``add_command``"
         )
 
-    def noidle(self):
-        raise NotImplementedError(
-            "Abstract ``MPDClientBase`` does not implement ``noidle``"
-        )
-
     def command_list_ok_begin(self):
         raise NotImplementedError(
             "Abstract ``MPDClientBase`` does not implement " "``command_list_ok_begin``"
@@ -287,6 +282,10 @@ class MPDClientBase(object):
     @mpd_commands("idle")
     def _parse_idle(self, lines):
         return self._parse_list(lines)
+
+    @mpd_commands("noidle")
+    def _parse_noidle(self, lines):
+        return
 
     @mpd_commands("addid", "config", "replay_gain_status", "rescan", "update")
     def _parse_item(self, lines):
@@ -766,6 +765,10 @@ class MPDClient(MPDClientBase):
         ret = self._wrap_iterator(self._parse_list(lines))
         self._sock.settimeout(self._timeout)
         return ret
+
+    @mpd_commands("noidle")
+    def _parse_noidle(self, lines):
+        return
 
     @property
     def timeout(self):
